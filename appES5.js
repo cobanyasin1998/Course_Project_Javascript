@@ -20,11 +20,32 @@ UI.prototype.addCourseToList = function (course) {
 };
 
 UI.prototype.clearControls = function () {
-  const title = document.getElementById("title").value = "";
-  const instructor = document.getElementById("instructor").value = "";
-  const image = document.getElementById("image").value = "";
+  const title = (document.getElementById("title").value = "");
+  const instructor = (document.getElementById("instructor").value = "");
+  const image = (document.getElementById("image").value = "");
 };
 
+UI.prototype.deleteCourse = function (element) {
+  if (element.classList.contains("delete")) {
+    element.parentElement.parentElement.remove();
+  }
+};
+UI.prototype.ShowAlert = function (message,className) {
+ 
+  var alert =`
+  <div class="alert alert-${className}">${message}</div>
+  `;
+  
+  const row = document.querySelector(".row");
+
+  row.insertAdjacentHTML('beforebegin',alert);
+
+  setTimeout(()=>{
+
+    document.querySelector('alert').remove();
+
+  });
+};
 document.querySelector("#new-course").addEventListener("submit", function (e) {
   const title = document.getElementById("title").value;
   const instructor = document.getElementById("instructor").value;
@@ -33,8 +54,22 @@ document.querySelector("#new-course").addEventListener("submit", function (e) {
   const course = new Course(title, instructor, image);
 
   const ui = new UI();
-  ui.addCourseToList(course);
-  ui.clearControls();
+
+  if (title === "" || instructor === "" || image === "") {
+    ui.ShowAlert("Please complete the form", "warning");
+  } else {
+    ui.addCourseToList(course);
+    ui.clearControls();
+    ui.ShowAlert("The course has been added", "success");
+
+  }
 
   e.preventDefault();
+});
+
+document.getElementById("course-list").addEventListener("click", function (e) {
+  const ui = new UI();
+  ui.deleteCourse(e.target);
+  ui.ShowAlert("The course has been deleted", "danger");
+
 });
